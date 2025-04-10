@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>节奏盒子全模组 - 游戏介绍</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: #777373;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 0 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .game-info {
+            flex: 0 1 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            order: 2;
+            width: 300px;
+        }
+
+        .game-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            margin: 0;
+        }
+
+        .game-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            order: 1;
+        }
+
+        .game-desc {
+            color: #aaa;
+            font-size: 14px;
+            line-height: 1.6;
+            text-align: left;
+            margin: 0;
+        }
+
+        .start-btn {
+            display: inline-block;
+            background: #227fbd;
+            color: white;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 18px;
+            transition: transform 0.3s;
+            padding: 10px 30px;
+            order: 3;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .info-section {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .info-column {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .info-item {
+            margin: 12px 0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-item::before {
+            content: "●";
+            color: #00cc66;
+            margin-right: 8px;
+        }
+
+        .policy-buttons {
+            width: 100%;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .policy-btn {
+            padding: 8px 25px;
+            background: #333;
+            border-radius: 20px;
+            color: #00ccff;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .policy-btn:hover {
+            background: #444;
+        }
+
+        .game-image {
+            width: 100vw;
+            /* 设置为视口宽度 */
+            margin-left: calc(-50vw + 50%);
+            /* 使用 calc 计算负边距 */
+            margin-right: calc(-50vw + 50%);
+            margin-top: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            transform: translateX(-50%);
+            /* 水平居中 */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .footer {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            line-height: 1.8;
+            margin-top: 30px;
+            padding: 20px 0;
+            border-top: 1px solid #333;
+        }
+
+        /* 平板设备适配 */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .header {
+                gap: 10px;
+                padding: 0 15px;
+            }
+
+            .game-info {
+                width: 250px;
+            }
+
+            .start-btn {
+                padding: 8px 25px;
+                font-size: 16px;
+            }
+
+            .info-section {
+                padding: 15px;
+                margin: 0 15px 30px;
+            }
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 0;
+            }
+
+            .game-info {
+                width: 100%;
+                text-align: center;
+                order: 2;
+            }
+
+            .game-title {
+                font-size: 18px;
+            }
+
+            .game-desc {
+                text-align: center;
+                font-size: 13px;
+            }
+
+            .game-icon {
+                width: 60px;
+                height: 60px;
+                order: 1;
+            }
+
+            .start-btn {
+                width: 100%;
+                text-align: center;
+                padding: 8px 20px;
+                font-size: 16px;
+                order: 3;
+            }
+
+            .info-section {
+                padding: 5px;
+                /* 减小内边距 */
+                gap: 10px;
+                /* 减小元素之间的间距 */
+                margin: 0 0 10px;
+                /* 减小外边距 */
+            }
+
+            .info-column {
+                flex: 0 0 100%;
+                min-width: auto;
+            }
+
+            .info-item {
+                font-size: 13px;
+                margin: 3px 0;
+                /* 减小上下间距 */
+            }
+
+            .policy-buttons {
+                flex-direction: column;
+                gap: 8px;
+                align-items: center;
+            }
+
+            .policy-btn {
+                width: 80%;
+                text-align: center;
+                padding: 8px 15px;
+            }
+
+            .game-image {
+                margin-top: 15px;
+                margin-bottom: 15px;
+                margin: 15px auto;
+                border-radius: 8px;
+            }
+
+            .footer {
+                font-size: 11px;
+                padding: 15px 0;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <img src="./icon.png" alt="游戏图标" class="game-icon">
+        <div class="game-info">
+            <h1 class="game-title">节奏盒子全模组</h1>
+            <p class="game-desc">这是一款非常有趣的游戏，具有丰富的玩法和精美的画面。</p>
+        </div>
+        <a href="#" class="start-btn" id="startGameBtn">开始游戏</a>
+        <qa-router-button data-package-name="com.fzxy.jzhzkbhj.nearme.gamecenter" data-page="/" data-params="{}"
+            data-design-params='{"fontSize": 16,"designWidth": 1080}'
+            data-click-event='{"eventName": "handleClickEvent", "eventParams": "anyString"}'
+            data-expose-event='{"eventName": "handleExposeEvent", "eventParams": "anyString"}'
+            style="position:fixed; bottom: 1rem; margin:auto; width: 100%; height: 4rem;">
+            <templates>
+                <div class="cell">
+                    <button>点击跳转快应用</button>
+                </div>
+            </templates>
+        </qa-router-button>
+    </div>
+
+    <div class="info-section">
+        <div class="info-column">
+            <div class="info-item">快应用名称：节奏盒子全模组</div>
+            <div class="info-item">应用版本：1.0.0</div>
+        </div>
+        <div class="info-column">
+            <div class="info-item">更新时间：2025-04-8</div>
+            <div class="info-item">开发者：xxx科技有限公司</div>
+        </div>
+        <div class="policy-buttons">
+            <a href="#" class="policy-btn">应用权限>></a>
+            <a href="#" class="policy-btn">隐私政策>></a>
+        </div>
+    </div>
+
+    <div class="game-image">
+        <img src="./Game.png" alt="游戏截图" style="width:100%">
+    </div>
+
+    <div class="footer">
+        <p>鹭岛同创（厦门）科技有限公司 闽ICP备2022008833号-2</p>
+        <p>联系邮箱：13731101@qq.com</p>
+        <p>抵制不良游戏，拒绝盗版游戏。注意自我保护，谨防受骗上当。</p>
+    </div>
+
+    <script 
+  type="text/javascript" 
+  src="https://statres.quickapp.cn/quickapp/js/qa_router.min.js"> <!-- 明确使用https协议 -->
+</script>
+    <script>
+        // 获取按钮元素
+        const startGameBtn = document.getElementById('startGameBtn');
+
+        // 添加点击事件
+        startGameBtn.addEventListener('click', function (e) {
+            console.log('------------------点击了开始游戏按钮-----------------')
+            e.preventDefault(); // 阻止默认跳转行为
+
+            // 创建 qa-router-button 元素
+            const qaRouterButton = document.createElement('qa-router-button');
+            qaRouterButton.setAttribute('data-package-name', 'com.fzxy.jzhzkbhj.nearme.gamecenter');
+            qaRouterButton.setAttribute('data-page', '/');
+            qaRouterButton.setAttribute('data-params', '{}');
+            qaRouterButton.setAttribute('data-design-params', '{"fontSize": 16,"designWidth": 1080}');
+            qaRouterButton.setAttribute('data-click-event', '{"eventName": "handleClickEvent", "eventParams": "anyString"}');
+            qaRouterButton.setAttribute('data-expose-event', '{"eventName": "handleExposeEvent", "eventParams": "anyString"}');
+            qaRouterButton.style.display = 'none'; // 隐藏该元素
+
+            // 将 qa-router-button 添加到页面中
+            document.body.appendChild(qaRouterButton);
+
+            // 模拟点击 qa-router-button
+            qaRouterButton.click();
+
+            // this.channelReady();
+
+            
+        });
+        // channelReady(function (bAvailable) {
+        //         alert('是否存在框架服务：' + bAvailable)
+        //     })
+        // 定义回调函数
+        function handleClickEvent(params) {
+            console.log(`触发主页面回调 handleClickEvent: ${params}`);
+        }
+
+        function handleExposeEvent(params) {
+            console.log(`触发主页面回调 handleExposeEvent: ${params}`);
+        }
+    </script>
+</body>
+
+</html>
