@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -295,6 +296,8 @@
         </qa-router-button>
     </div>
 
+
+
     <div class="info-section">
         <div class="info-column">
             <div class="info-item">快应用名称：节奏盒子全模组</div>
@@ -315,55 +318,249 @@
     </div>
 
     <div class="footer">
-        <p>鹭岛同创（厦门）科技有限公司 闽ICP备2022008833号-2</p>
+        <p>鹭岛同创（厦门）科技有限公司</p>
         <p>联系邮箱：13731101@qq.com</p>
         <p>抵制不良游戏，拒绝盗版游戏。注意自我保护，谨防受骗上当。</p>
     </div>
+    <div id="envTip"
+        style="display:none; position:fixed; top:0; width:100%; padding:15px; background:#ffeb3b; color:#000; text-align:center;">
+        请使用系统浏览器打开以启动游戏
+    </div>
+    <script type="text/javascript" src="https://statres.quickapp.cn/quickapp/js/qa_router.min.js"> <!-- 明确使用https协议 -->
+    </script>
+    <!-- <script>
+        // 初始化参数
+        const config = {
+            packageName: 'com.wzdq.jzhzqmz.nearme.gamecenter',
+            // hapLink:'hap://game/com.fzxy.jzhzkbhj.nearme.gamecenter/?key1=value1&key2=value2',
+            // 正确格式（使用encodeURIComponent）
+            hapLink: `hap://game/${encodeURIComponent('com.fzxy.jzhzkbhj.nearme.gamecenter')}?${new URLSearchParams({
+                type: 'hot',
+                value1: '1',
+                in_one_task: 'true'
+            }).toString()}`,
+            //  'hap://game/com.wzdq.jzhzqmz.nearme.gamecenter?' +
+            //     'type=hot&' +  // 强制设置为热启动
+            //     'in_one_task=true&' +
+            //     '_GEOS_=%7B%22key%22%3A%22value%22%7D&' +
+            //     'value1', // 满足查询条件
+            fallbackUrl: 'https://api.app.oppomobile.com/app/detail?id=com.wzdq.jzhzqmz.nearme.gamecenter',
+            timeout: 3000
+        };
 
-    <script 
-  type="text/javascript" 
-  src="https://statres.quickapp.cn/quickapp/js/qa_router.min.js"> <!-- 明确使用https协议 -->
-</script>
-    <script>
-        // 获取按钮元素
-        const startGameBtn = document.getElementById('startGameBtn');
+        // 环境检测
+        function checkEnvironment() {
+            // 微信环境检测
+            if (/MicroMessenger/i.test(navigator.userAgent)) {
+                document.getElementById('envTip').style.display = 'block';
+                return false;
+            }
+            return true;
+        }
+        // OPPO设备优化跳转
+        function oppoSpecialJump() {
+            try {
+                // 优先尝试OPPO私有协议
+                window.location.href = `oppo://appdetails?packagename=${config.packageName}`;
+                setTimeout(() => {
+                    window.location.href = config.fallbackUrl;
+                }, 3000);
+            } catch (e) {
+                console.error('OPPO协议跳转失败');
+            }
+        }
+        // 主跳转逻辑
+        function startQuickApp() {
 
-        // 添加点击事件
-        startGameBtn.addEventListener('click', function (e) {
-            console.log('------------------点击了开始游戏按钮-----------------')
-            e.preventDefault(); // 阻止默认跳转行为
+            // if (!checkEnvironment()) return;
 
-            // 创建 qa-router-button 元素
-            const qaRouterButton = document.createElement('qa-router-button');
-            qaRouterButton.setAttribute('data-package-name', 'com.fzxy.jzhzkbhj.nearme.gamecenter');
-            qaRouterButton.setAttribute('data-page', '/');
-            qaRouterButton.setAttribute('data-params', '{}');
-            qaRouterButton.setAttribute('data-design-params', '{"fontSize": 16,"designWidth": 1080}');
-            qaRouterButton.setAttribute('data-click-event', '{"eventName": "handleClickEvent", "eventParams": "anyString"}');
-            qaRouterButton.setAttribute('data-expose-event', '{"eventName": "handleExposeEvent", "eventParams": "anyString"}');
-            qaRouterButton.style.display = 'none'; // 隐藏该元素
+            if (/CPH|PCHM|PEXM|PDEM/i.test(navigator.userAgent)) {
+                oppoSpecialJump();
+                return;
+            }
 
-            // 将 qa-router-button 添加到页面中
-            document.body.appendChild(qaRouterButton);
+            let isJumped = false;
 
-            // 模拟点击 qa-router-button
-            qaRouterButton.click();
+            // 官方推荐跳转方式[6](@ref)
+            try {
+                appRouter(
+                    'com.wzdq.jzhzqmz.nearme.gamecenter',
+                    '/',
+                    {
+                        type: "hot",          // 强制指定启动类型[1](@ref)
+                        value1: "hot_launch",// 满足query条件判断
+                        _keep_alive: "1",    // 进程保活参数（OPPO专用）
+                        in_one_task: "true"  // 单任务模式
+                    },
+                    '节奏盒子全模组'
+                );
+            } catch (e) {
+                console.error('官方SDK跳转失败:', e);
+            }
 
-            // this.channelReady();
+            // 双保险协议跳转
+            setTimeout(() => {
+                window.location.href = config.hapLink;
+                console.log('尝试HAP协议直跳');
+            }, 100);
 
-            
+            // 超时检测
+            setTimeout(() => {
+                if (!isJumped) {
+                    window.location.href = config.fallbackUrl;
+                }
+            }, config.timeout);
+
+            // 跳转成功检测
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) isJumped = true;
+            });
+        }
+
+        // 事件绑定
+        document.getElementById('startGameBtn').addEventListener('click', function (e) {
+            e.preventDefault();
+            startQuickApp();
         });
-        // channelReady(function (bAvailable) {
-        //         alert('是否存在框架服务：' + bAvailable)
-        //     })
-        // 定义回调函数
-        function handleClickEvent(params) {
-            console.log(`触发主页面回调 handleClickEvent: ${params}`);
+
+        // 框架可用性检测[6](@ref)
+        channelReady(function (bAvailable) {
+            if (!bAvailable) {
+                console.log('快应用框架不可用');
+                document.getElementById('startGameBtn').style.backgroundColor = '#ff5722';
+            }
+        });
+
+        // 回调处理
+        window.handleClickEvent = params => {
+            console.log('跳转事件:', params);
+            // 这里可以添加统计代码
+        };
+
+        window.handleExposeEvent = params => {
+            console.log('曝光事件:', params);
+            // 这里可以添加统计代码
+        };
+    </script> -->
+    <script>
+        // 增强版配置参数[7](@ref)
+        const config = {
+            packageName: 'com.wzdq.jzhzqmz.nearme.gamecenter',
+            hapLink: `hap://app/${encodeURIComponent('com.wzdq.jzhzqmz.nearme.gamecenter')}?${new URLSearchParams({
+                type: 'hot',
+                launchMode: 'reuse',  // 进程复用模式
+                _timestamp: Date.now(),
+                _vendor: 'oppo',      // 厂商标识
+                _geos: JSON.stringify({ key: "value" })
+            }).toString()}`,
+            fallbackUrl: 'https://api.app.oppomobile.com/app/detail?id=com.wzdq.jzhzqmz.nearme.gamecenter',
+            timeout: 3000,
+            // 厂商私有协议
+            vendorLinks: {
+                oppo: `oppo://launcher/startapp?package=com.wzdq.jzhzqmz&launchMode=hot&timestamp=${Date.now()}`,
+                huawei: 'hwfastapp://com.wzdq.jzhzqmz?launchMode=hot'
+            }
+        };
+
+        // 环境检测增强[6](@ref)
+        function checkEnvironment() {
+            const ua = navigator.userAgent;
+            if (/MicroMessenger|Alipay/i.test(ua)) {
+                document.getElementById('envTip').style.display = 'block';
+                return false;
+            }
+            return true;
         }
 
-        function handleExposeEvent(params) {
-            console.log(`触发主页面回调 handleExposeEvent: ${params}`);
+        // OPPO专属跳转优化[6](@ref)
+        function oppoSpecialJump() {
+            try {
+                // 第一层：OPPO私有协议热启动
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = config.vendorLinks.oppo;
+                document.body.appendChild(iframe);
+
+                // 第二层：标准协议保底
+                setTimeout(() => {
+                    iframe.remove();
+                    startStandardJump();
+                }, 500);
+            } catch (e) {
+                console.error('OPPO协议跳转异常:', e);
+            }
         }
+
+        // 标准跳转逻辑
+        function startStandardJump() {
+            let isJumped = false;
+
+            // 官方SDK跳转（含热启动参数）[7](@ref)
+            try {
+                appRouter(
+                    config.packageName,
+                    '/',
+                    {
+                        type: "hot",
+                        _keep_alive: "1",
+                        in_one_task: "true",
+                        _vendor_params: JSON.stringify({
+                            oppo: { keepAlive: 1 },
+                            huawei: { hwStartMode: 'hot' }
+                        })
+                    },
+                    '节奏盒子全模组'
+                );
+            } catch (e) {
+                console.error('SDK跳转失败:', e);
+            }
+
+            // HAP协议直跳（双保险）[1,7](@ref)
+            setTimeout(() => {
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = config.hapLink;
+                document.body.appendChild(iframe);
+                setTimeout(() => iframe.remove(), 1000);
+            }, 100);
+
+            // 跳转状态检测
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) isJumped = true;
+            });
+
+            // 超时兜底
+            setTimeout(() => {
+                if (!isJumped) window.location = config.fallbackUrl;
+            }, config.timeout);
+        }
+
+        // 主跳转入口
+        function startQuickApp() {
+            if (!checkEnvironment()) return;
+
+            // 厂商专属处理[6](@ref)
+            if (/CPH|PCHM/i.test(navigator.userAgent)) {
+                oppoSpecialJump();
+            } else if (/HUAWEI|HONOR/i.test(navigator.userAgent)) {
+                // 华为设备处理（示例）
+                window.location.href = config.vendorLinks.huawei;
+                setTimeout(startStandardJump, 300);
+            } else {
+                startStandardJump();
+            }
+        }
+
+        // 事件绑定保持不变
+        document.getElementById('startGameBtn').addEventListener('click', startQuickApp);
+
+        // 框架检测增强[7](@ref)
+        channelReady(bAvailable => {
+            if (!bAvailable) {
+                document.getElementById('startGameBtn').style.backgroundColor = '#ff5722';
+                console.warn('快应用框架不可用');
+            }
+        });
     </script>
 </body>
 
