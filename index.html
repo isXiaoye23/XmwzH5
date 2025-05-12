@@ -164,6 +164,74 @@
             border-top: 1px solid #333;
         }
 
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .45);
+            z-index: 9998;
+        }
+
+        .modal-content {
+            max-width: 600px;
+            margin: 7% auto;
+            background: #fff;
+            padding: 26px 36px;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .25);
+            line-height: 1.8;
+            position: relative;
+        }
+
+        .modal-title {
+            margin: 0 0 16px;
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            color: #000;
+        }
+
+        .modal-body {
+            /* ← 已有这段就加一行，没有就新建 */
+            color: #000;
+            /* 这里设置文字为纯黑 */
+        }
+
+        .close {
+            position: absolute;
+            right: 18px;
+            top: 12px;
+            font-size: 24px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        /* 权限表格 */
+        .perm-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-top: 4px;
+            text-align: center;
+            color: #000;
+        }
+
+        .perm-table th,
+        .perm-table td {
+            border: 1px solid #000;
+            padding: 6px;
+        }
+
+        .perm-table th {
+            background: #f5f5f5;
+            font-weight: 700;
+            color: #000;
+        }
+
         /* 平板设备适配 */
         @media (min-width: 481px) and (max-width: 768px) {
             .header {
@@ -307,288 +375,159 @@
 </head>
 
 <body>
+    <!-- ========= 页面主体 ========= -->
     <div class="header">
         <img src="./icon.png" alt="游戏图标" class="game-icon">
         <div class="game-info">
             <h1 class="game-title">节奏盒子全模组</h1>
             <p class="game-desc">这是一款非常有趣的游戏，具有丰富的玩法和精美的画面。</p>
         </div>
-        <a href="#" class="start-btn" id="startGameBtn">开始游戏</a>
-        <qa-router-button data-package-name="com.fzxy.jzhzkbhj.nearme.gamecenter" data-page="/" data-params="{}"
-            data-design-params='{"fontSize": 16,"designWidth": 1080}'
-            data-click-event='{"eventName": "handleClickEvent", "eventParams": "anyString"}'
-            data-expose-event='{"eventName": "handleExposeEvent", "eventParams": "anyString"}'
-            style="position:fixed; bottom: 1rem; margin:auto; width: 100%; height: 4rem;">
-            <templates>
-                <!-- <div class="cell">
-                    <button>点击跳转快应用</button>
-                </div> -->
-            </templates>
-        </qa-router-button>
+        <a href="javascript:void(0);" class="start-btn" id="startGameBtn">开始游戏</a>
     </div>
-
-
-
-
 
     <div class="game-image">
         <img src="./Game.png" alt="游戏截图" style="width:100%">
     </div>
 
-
-    <!-- <div class="info-section">
-        <div class="info-column">
-            <div class="info-item">快应用名称：节奏盒子全模组</div>
-            <div class="info-item">应用版本：1.0.8</div>
-        </div>
-        <div class="info-column">
-            <div class="info-item">更新时间：2025-04-8</div>
-            <div class="info-item">开发者：福州寻游科技有限公司</div>
-        </div>
-        <div class="policy-buttons">
-            <a href="#" class="policy-btn">应用权限>></a>
-            <a href="#" class="policy-btn1">隐私政策>></a>
-        </div>
-    </div> -->
     <div class="bottom-info">
-        <p>快应用名称：节奏盒子全模组（快应用）</p>
-        <p>
-            版本：1.0.8
-            <a href="#privacy" onclick="window.open('#privacy','_blank','width=800,height=600')">隐私协议</a>
+        <p>快游戏名称：节奏盒子全模组</p>
+        <p>版本：1.0.8　
+            <a href="https://bhtd.top/file/yslj/xmwzdq1.html">隐私协议</a>
             <span class="sep">·</span>
-            <a href="#features">功能介绍</a>
+            <!-- ★ 改为触发弹框 -->
+            <a href="javascript:void(0);" id="featureLink">功能介绍</a>
             <span class="sep">·</span>
-            <a href="#permissions">权限</a>
+            <a href="javascript:void(0);" id="permissionLink">权限</a>
         </p>
-        <p>Copyright © 2025 福州寻游科技有限公司</p>
-        <p>浙ICP备14037512号-2</p>
-    </div>
-    <div id="envTip"
-        style="display:none; position:fixed; top:0; width:100%; padding:15px; background:#ffeb3b; color:#000; text-align:center;">
-        请使用系统浏览器打开以启动游戏
+        <p>Copyright © 2025 福州寻游科技有限公司</p>
+        <p>浙ICP备14037512号‑2</p>
     </div>
 
+    <!-- ===== 兜底提示（仅在不支持环境显示） ===== -->
+    <div id="envTip" style="display:none;position:fixed;top:0;left:0;width:100%;
+                padding:14px;background:#ffeb3b;color:#000;text-align:center;z-index:999;">
+        当前环境不支持调起，请用系统浏览器打开
+    </div>
 
-    <!-- 隐私政策 -->
-    <!-- 在</body>标签前添加 -->
-    <div id="privacyContent" style="display:none;">
-        <!-- 将您提供的隐私政策内容完整复制到这里 -->
-        <div style="padding:20px;color:#333;max-width:800px;margin:0 auto">
-            <div id="wrap">
-                <!-- 标题 -->
-                <header id="top">隐私协议</header>
-                <div class="account-fm">
-                    <div class="agreement-box">
-
-                        <p>发布日期：2021年10月21日</p>
-                        <p>最新更新时间：2022年 10月10 日</p>
-                        <p>本隐私政策规定了厦门市玩转地球科技有限公司（以下简称“我们”）在您使用合作游戏SDK服务时，如何收集，使用，披露，处理和保护您提供给我们的所有信息。集成合作游戏SDK的移动应用程序（App）开发者作为数据控制者决定用户数据的处理目的、方式，合作游戏SDK在提供服务的过程中作为数据处理者，接受开发者委托并根据开发者指示处理用户数据。通过合作游戏SDK收集的个人信息的使用仅限于开发者指示我们处理个人数据的目的。
-                        </p>
-                        <p>请您仔细阅读本个人信息保护政策并确定您已了解我们收集、处理和共享您的个人信息时所遵循的规范。如您不同意协议中的任何条款，请通过3772952714@qq.com与我们联系。</p>
-                        <p>我们在集成合作游戏SDK的App开发者的指导下收集信息，并且与开发者处理任何特定个人数据没有直接关系。如果您是集成合作游戏SDK的移动应用程序（App）的使用者，并且不想再继续使用负载应用了我方服务的该客户端，请直接与您所使用的客户端方联系。
-                        </p>
-                        <p>本个人信息保护政策将帮助您了解以下内容：
-                            一、我们如何收集和使用您的个人信息
-                            二、我们如何保留您的个人信息
-                            三、我们如何共享、转让或公开披露您的个人信息
-                            四、我们如何保护您的个人信息
-                            五、您对您的个人信息的权利
-                            六、本个人信息保护政策如何更新</p>
-                        <p>一、我们如何收集和使用您的个人信息
-                            1. 我们如何收集和使用您的个人信息
-                            1.1
-                            为履行国家相关法律法规要求的实名认证规定，当您使用合作游戏SDK服务时，我们将收集您的实名认证信息，包括您的姓名、身份证号码，如您拒绝提供，根据法律规定，您的游戏时长以及相关充值行为将受到限制。在您完成实名认证后，您的实名信息将与您的我们帐号绑定，您可以在我们帐号的实名认证页面修改您的实名认证信息。
-                            1.2
-                            我们将严格遵守本个人信息保护政策所述的目的来使用您的个人信息，您的个人信息将仅用于收集时即已确定、说明并且获得您授权的目的。如我们要将信息用于本政策未载明的其它用途时，会事先征求您的同意。如我们要将基于特定目的收集而来的信息用于其他目的时，会事先征求您的同意。在没有用户同意情况下，我们不会将用户个人信息和行为数据出售或提供给第三方使用。
-                        </p>
-                        <p>2. 设备权限调用
-                            2. 设备权限调用 （1）在您使用合作游戏SDK时，我们可能需要调用您的某些设备权限以便于收集相应个人信息包括但不限于IMEI、IMSI、设备 MAC 地址、ip、Android
-                            ID、OAID、MEID、ICCID、SN、SUPI、SUCI、软件安装列表、位置、联系人、通话记录、日历、短信、本机电话号码、图片、音视频、剪切板等个人信息，并为您提供对应的业务功能或服务，
-                            具体而言我们可能需要调用您的以下设备权限： 调取设备权限 调用权限目的 读取电话状态*1 用于获取用户的IMEI设备信息，方便定位客诉问题 写入外置存储器
-                            用于SDK数据缓存，减少加载过程，提升游戏体验 获取App账户*2 用于获取登录帐号，使得App可以登录游戏 *1仅限安卓P及以下版本，合作游戏SDK才会调用读取电话状态权限。
-                            *2仅限一加9以下机型，合作游戏SDK才会调用读取获取App账户权限。
-                            （2）请您理解，合作游戏SDK使用权限受限于集成SDK的移动应用程序（App）获取权限的情况。您可以通过关闭相关移动应用程序的权限，来阻止或者关闭合作游戏SDK使用权限。
-
-                            二、我们如何保留您的个人信息
-                            出于遵循法律规范、解决纠纷或履行协议的目的，在与特定开发者合作期间，我们需要保留必要的个人信息。在合作期限结束后，或任何存储期结束，或符合信息删除条件时，我们将完全删除或匿名化您的个人信息。
-                            在我们因特殊原因停止运营我们的部分或全部产品或服务时，我们会及时向您告知并停止相关产品或服务的个人信息收集和处理活动，同时将我们所持有的与该述产品或服务相关的个人信息进行删除或匿名化处理，除非法律法规另有规定。
-                        </p>
-                        <p>三、我们如何共享、转让披露您的个人信息
-                            1.我们如何共享、转让您的个人信息
-                            我们可能不时会与其关联公司和与我们合作提供产品和服务的战略合作伙伴共享部分个人信息或在其他情形中共享、转让您的个人信息，以便提供您要求的产品或服务。
-                            （1）关联公司：为便于我们顺利开展业务运营，您的个人信息可能会与我们的关联公司共享。我们只会共享必要的个人信息，如果我们或关联公司改变个人信息的使用及处理目的，将再次征求您的授权同意。
-                            （2）与授权合作伙伴共享：我们可能会与合作伙伴共享您的某些个人信息，以提供合作向您提供服务并提升用户体验。例如：
-                            a.我们需要向集成合作游戏SDK的移动应用程序（App）开发者，共享您的我们帐号信息以及根据您实名认证结果计算出的年龄信息，我们共享上述信息以便App开发者履行法律规定的未成年人防沉迷义务。我们仅会在必要限度内向上述授权合作伙伴共享您的个人信息。
-                            （3）在涉及合并、收购或破产清算时，如涉及到个人信息转让，我们会在要求新的持有您个人信息的公司、组织继续受此隐私政策的约束，否则我们将要求该公司、组织重新向您征求授权同意。如果不涉及个人信息转让，我们会对您进行充分告知，并将我们控制的所有个人信息删除或做匿名化处理。
-                            我们仅会出于合法、正当、必要、特定、明确的目的共享或转让您的个人信息，并且只会共享服务所必需的个人信息。同时，我们会通过协议或其他适当措施，要求上述第三方采取相当的保密和安全措施来处理个人信息。
-
-                            2.我们如何公开披露您的个人信息
-                            我们仅会在以下情况下，公开披露您的个人信息：
-                            （1）获得您明确同意后；或
-                            （2）基于法律的披露：在法律强制要求遵守传票或其他法律程序、诉讼或政府主管部门强制性要求的情况下，若我们真诚地相信披露对保护我们的权利、保护您的安全或他人的安全、调查欺诈或响应政府要求是必要的，我们可能会披露您的个人信息。
-
-                            3.共享、转让或公开披露个人信息的授权同意例外
-                            您已充分知晓，依据可适用的法律，在以下情形中，我们共享、转让或公开披露您的个人信息无需事先征得您的授权同意：
-                            （1）与我们履行法律法规规定的义务相关的；
-                            （2）与国家安全、国防安全直接相关的；
-                            （3）与公共安全、公共卫生、重大公共利益直接相关的；
-                            （4）与刑事侦查、起诉、审判和判决执行等直接相关的；
-                            （5）出于维护您或其他个人的生命、财产等重大合法权益但又很难得到您本人授权同意的；
-                            （6）所涉及的个人信息是您已自行向社会公众公开的；
-                            （7）从合法公开披露的信息，如合法的新闻报道、政府信息公开等渠道，收集的您的个人信息的。</p>
-                        <p>四、我们如何保护您的个人信息
-                            1.我们如何保护您的个人信息
-                            我们采取了合理可行的技术安全和组织措施，以保护所收集的与服务有关的信息。我们已使用符合业界标准的安全防护措施保护您提供的个人信息，防止数据遭到未经授权的访问、公开披露、使用、修改、损坏或丢失。我们会采取一切合理可行的措施，保护您的个人信息。
-
-                            2.个人信息安全事件的通知与应对
-                            但是请注意，虽然我们采取了合理的措施保护您的信息，但没有任何网站、Internet
-                            传输、计算机系统或无线连接是绝对安全的。在发生个人信息安全事件后，我们将按照相关法律法规的要求，及时向您告知：安全事件的基本情况和可能的影响、我们已采取或将要采取的处置措施、您可自主防范和降低风险的建议、对您的补救措施等。我们将及时将事件相关情况以邮件、信函、电话、推送通知等方式告知您。难以逐一告知个人信息主体时，我们会采取合理、有效的方式发布公告。同时，我们还将按照监管部门要求，主动上报个人信息安全事件的处置情况。
-                        </p>
-                        <p>五、您对您的个人信息的权利
-                            在您使用集成合作游戏SDK的移动应用程序（App）时，我们与所处理的任何特定个人数据没有直接关系。如您需要查询、访问、或更正，修改或删除个人信息，应向移动应用程序（App）开发者（数据控制者）提出请求。如果被要求删除数据，我们将在合理的时间内做出回应。如果您认为我们对您个人数据的处理违反了适用法律，您可以向监管机构投诉。
-                        </p>
-                        <p>六、本个人信息保护政策如何更新
-                            我们保留不时更新或修改本隐私政策的权利。我们会通过不同渠道向您发送变更通知。对于个人信息保护政策的重大变更，若您向我们提供了电子邮箱，我们会在变更生效前通过您的电子邮件通知您，否则我们会在我们的网站上发布告示或通过我们的设备向您推送通知。
-                            本个人信息保护政策容许调整，但未经您明示同意，我们不会削弱您按照本个人信息保护政策所享有的权利。
-                            本个人信息保护政策自更新之日起生效。
-                            如您对我们的隐私政策或个人数据处理有任何问题或疑虑，您可以通过本页面与我们的数据保护官联系，行使您的数据隐私权利，我们会在法律法规规定的时间范围内响应您的权利请求。
-                        <p>厦门市玩转地球科技有限公司</p>
-
-                    </div>
-                </div>
-            </div>
+    <!-- =========== ★ 功能介绍弹框 =========== -->
+    <div id="featureModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="modal-title">功能介绍</h2>
+            <p class="modal-body">
+                该产品是一款休闲益智类小游戏，可以让您在放松心情的同时锻炼您的注意力、反应能力，
+                劳逸结合，快乐成长！
+            </p>
         </div>
     </div>
 
+    <!-- =========== 权限列表弹框 =========== -->
+    <div id="permissionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="modal-title">权限列表</h2>
+            <table class="perm-table">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>权限名</th>
+                        <th>权限用途</th>
+                        <th>权限类别</th>
+                        <th>权限类型</th>
+                        <th>权限说明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>storage</td>
+                        <td>数据存储</td>
+                        <td>前台运行权限</td>
+                        <td>普通权限</td>
+                        <td>需要存储应用的一些权限字段，修改设置应用中的设置项</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>fetch</td>
+                        <td>网络请求</td>
+                        <td>前台运行权限</td>
+                        <td>普通权限</td>
+                        <td>请求网络内容</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- 引入 Quick App Inline Router（注：必须放在调用 appRouter 之前） -->
+    <script src="//statres.quickapp.cn/quickapp/js/routerinline.min.js"></script>
+
+    <script src="//statres.quickapp.cn/quickapp/js/routerinline.min.js"></script>
     <script>
-        // 修改隐私按钮链接
-        document.querySelector('.policy-btn').addEventListener('click', function (e) {
-            e.preventDefault();
-            window.open('#privacy', '_blank', 'width=800,height=600');
-        });
-    </script>
-    <script type="text/javascript" src="https://statres.quickapp.cn/quickapp/js/qa_router.min.js"> <!-- 明确使用https协议 -->
-    </script>
-    <script>
-        // 增强版配置参数[7](@ref)
-        const config = {
-            packageName: 'com.wzdq.jzhzqmz.nearme.gamecenter',
-            hapLink: `hap://app/${encodeURIComponent('com.wzdq.jzhzqmz.nearme.gamecenter')}?${new URLSearchParams({
-                type: 'hot',
-                launchMode: 'reuse',  // 进程复用模式
-                _timestamp: Date.now(),
-                _vendor: 'oppo',      // 厂商标识
-                _geos: JSON.stringify({ key: "value" })
-            }).toString()}`,
-            fallbackUrl: 'https://api.app.oppomobile.com/app/detail?id=com.wzdq.jzhzqmz.nearme.gamecenter',
-            timeout: 3000,
-            // 厂商私有协议
-            vendorLinks: {
-                oppo: `oppo://launcher/startapp?package=com.wzdq.jzhzqmz&launchMode=hot&timestamp=${Date.now()}`,
-                huawei: 'hwfastapp://com.wzdq.jzhzqmz?launchMode=hot'
+        (function () {
+            /* ---------- 读取落地页宏参数 ---------- */
+            const qs  = new URLSearchParams(location.search);
+            const PKG = 'com.fzxy.jzhzkbhj.nearme.gamecenter';
+    
+            const params = {
+                key1:'value1', key2:'value2',
+                url_type:2, number:1,
+                uctrackid:qs.get('uctrackid')||'',
+                _ts:Date.now()
+            };
+            const searchStr = new URLSearchParams(params).toString();
+    
+            const hapLink    = `hap://app/${PKG}/pages/Jump?${searchStr}`;
+            const intentLink = `intent://app/${PKG}/pages/Jump?${searchStr}#Intent;scheme=hap;package=${PKG};end`;
+            const storeLink  = `https://api.app.oppomobile.com/app/detail?id=${PKG}`;
+    
+            /* ---------- 微信 / 支付宝拦截 ---------- */
+            if(/MicroMessenger|Alipay/i.test(navigator.userAgent)){
+                document.getElementById('envTip').style.display='block'; return;
             }
-        };
-
-        // 环境检测增强[6](@ref)
-        function checkEnvironment() {
-            const ua = navigator.userAgent;
-            if (/MicroMessenger|Alipay/i.test(ua)) {
-                document.getElementById('envTip').style.display = 'block';
-                return false;
-            }
-            return true;
-        }
-
-        // OPPO专属跳转优化[6](@ref)
-        function oppoSpecialJump() {
-            try {
-                // 第一层：OPPO私有协议热启动
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.src = config.vendorLinks.oppo;
-                document.body.appendChild(iframe);
-
-                // 第二层：标准协议保底
-                setTimeout(() => {
-                    iframe.remove();
-                    startStandardJump();
-                }, 500);
-            } catch (e) {
-                console.error('OPPO协议跳转异常:', e);
-            }
-        }
-
-        // 标准跳转逻辑
-        function startStandardJump() {
-            let isJumped = false;
-
-            // 官方SDK跳转（含热启动参数）[7](@ref)
-            try {
-                appRouter(
-                    config.packageName,
-                    '/',
-                    {
-                        type: "hot",
-                        _keep_alive: "1",
-                        in_one_task: "true",
-                        _vendor_params: JSON.stringify({
-                            oppo: { keepAlive: 1 },
-                            huawei: { hwStartMode: 'hot' }
-                        })
-                    },
-                    '节奏盒子全模组'
-                );
-            } catch (e) {
-                console.error('SDK跳转失败:', e);
-            }
-
-            // HAP协议直跳（双保险）[1,7](@ref)
-            setTimeout(() => {
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.src = config.hapLink;
-                document.body.appendChild(iframe);
-                setTimeout(() => iframe.remove(), 1000);
-            }, 100);
-
-            // 跳转状态检测
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) isJumped = true;
+    
+            const btn = document.getElementById('startGameBtn');
+            btn.href = hapLink;   // UC 首次点击可跳
+    
+            btn.addEventListener('click', ev=>{
+                if(window.ucweb && ucweb.startRequest){ ucweb.startRequest('shell.page',[hapLink]); return; }
+                if(window.uac && uac.startApp){ uac.startApp({url:hapLink}); return; }
+    
+                if(typeof appRouter==='function'){
+                    ev.preventDefault();
+                    try{ appRouter(PKG,'/pages/Jump',params,false); }
+                    catch{ location.href = hapLink; }
+                }
+                const t0 = Date.now();
+                setTimeout(()=>{ if(!document.hidden) location.href=intentLink; },2000);
+                setTimeout(()=>{ if(!document.hidden) location.href=storeLink;  },5000);
+            },{passive:true});
+    
+            /* ---------- 弹框逻辑（功能介绍 + 权限列表） ---------- */
+            const openModal = id => document.getElementById(id).style.display='block';
+            const closeModal= id => document.getElementById(id).style.display='none';
+    
+            // 功能介绍
+            document.getElementById('featureLink')
+                .addEventListener('click',()=>openModal('featureModal'));
+            document.querySelector('#featureModal .close')
+                .addEventListener('click',()=>closeModal('featureModal'));
+    
+            // 权限列表
+            document.getElementById('permissionLink')
+                .addEventListener('click',()=>openModal('permissionModal'));
+            document.querySelector('#permissionModal .close')
+                .addEventListener('click',()=>closeModal('permissionModal'));
+    
+            // 点击蒙层关闭
+            window.addEventListener('click',e=>{
+                if(e.target.classList.contains('modal')) e.target.style.display='none';
             });
+        })();
+        </script>
 
-            // 超时兜底
-            setTimeout(() => {
-                if (!isJumped) window.location = config.fallbackUrl;
-            }, config.timeout);
-        }
-
-        // 主跳转入口
-        function startQuickApp() {
-            if (!checkEnvironment()) return;
-
-            // 厂商专属处理[6](@ref)
-            if (/CPH|PCHM/i.test(navigator.userAgent)) {
-                oppoSpecialJump();
-            } else if (/HUAWEI|HONOR/i.test(navigator.userAgent)) {
-                // 华为设备处理（示例）
-                window.location.href = config.vendorLinks.huawei;
-                setTimeout(startStandardJump, 300);
-            } else {
-                startStandardJump();
-            }
-        }
-
-        // 事件绑定保持不变
-        document.getElementById('startGameBtn').addEventListener('click', startQuickApp);
-
-        // 框架检测增强[7](@ref)
-        channelReady(bAvailable => {
-            if (!bAvailable) {
-                document.getElementById('startGameBtn').style.backgroundColor = '#ff5722';
-                console.warn('快应用框架不可用');
-            }
-        });
-    </script>
 </body>
+
 
 </html>
