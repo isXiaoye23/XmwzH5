@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>节奏盒子大合集 - 游戏介绍</title>
+    <title>节奏盒子大合集</title>
     <style>
         * {
             margin: 0;
@@ -383,6 +383,7 @@
             <p class="game-desc">这是一款非常有趣的游戏，具有丰富的玩法和精美的画面。</p>
         </div>
         <a href="javascript:void(0);" class="start-btn" id="startGameBtn">开始游戏</a>
+        <a id="link" style="display:none;"></a> <!-- 确保页面有这个元素 -->
     </div>
 
     <div class="game-image">
@@ -462,70 +463,113 @@
 
     <!-- 引入 Quick App Inline Router（注：必须放在调用 appRouter 之前） -->
     <script src="//statres.quickapp.cn/quickapp/js/routerinline.min.js"></script>
-
-    <script src="//statres.quickapp.cn/quickapp/js/routerinline.min.js"></script>
     <script>
         (function () {
             /* ---------- 读取落地页宏参数 ---------- */
-            const qs  = new URLSearchParams(location.search);
+            const qs = new URLSearchParams(location.search);
             const PKG = 'com.fzxy.jzhzkbhj.nearme.gamecenter';
-    
+
             const params = {
-                key1:'value1', key2:'value2',
-                url_type:2, number:1,
-                uctrackid:qs.get('uctrackid')||'',
-                _ts:Date.now()
+                key1: 'value1', key2: 'value2',
+                url_type: 2, number: 1,
+                uctrackid: qs.get('uctrackid') || '',
+                _ts: Date.now()
             };
             const searchStr = new URLSearchParams(params).toString();
-    
-            const hapLink    = `hap://app/${PKG}/pages/Jump?${searchStr}`;
+
+            const hapLink = `hap://app/${PKG}/pages/Jump?${searchStr}`;
             const intentLink = `intent://app/${PKG}/pages/Jump?${searchStr}#Intent;scheme=hap;package=${PKG};end`;
-            const storeLink  = `https://api.app.oppomobile.com/app/detail?id=${PKG}`;
-    
+            const storeLink = `https://api.app.oppomobile.com/app/detail?id=${PKG}`;
+
             /* ---------- 微信 / 支付宝拦截 ---------- */
-            if(/MicroMessenger|Alipay/i.test(navigator.userAgent)){
-                document.getElementById('envTip').style.display='block'; return;
+            if (/MicroMessenger|Alipay/i.test(navigator.userAgent)) {
+                document.getElementById('envTip').style.display = 'block'; return;
             }
-    
+
             const btn = document.getElementById('startGameBtn');
-            btn.href = hapLink;   // UC 首次点击可跳
-    
-            btn.addEventListener('click', ev=>{
-                if(window.ucweb && ucweb.startRequest){ ucweb.startRequest('shell.page',[hapLink]); return; }
-                if(window.uac && uac.startApp){ uac.startApp({url:hapLink}); return; }
-    
-                if(typeof appRouter==='function'){
-                    ev.preventDefault();
-                    try{ appRouter(PKG,'/pages/Jump',params,false); }
-                    catch{ location.href = hapLink; }
+            btn.href = hapLink; // UC 首次点击可跳
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const url = hapLink;  // 替换成你的实际链接，比如 hapLink
+
+                let a = document.getElementById('link');
+                a.href = url;
+                location.href = url;
+
+                setTimeout(() => {
+                    a.click();
+                }, 100);
+            });
+
+            // 定义开始游戏的逻辑
+            function startGame(ev) {
+                if (window.ucweb && ucweb.startRequest) {
+                    ucweb.startRequest('shell.page', [hapLink]);
+                    return;
+                }
+                if (window.uac && uac.startApp) {
+                    uac.startApp({ url: hapLink });
+                    return;
+                }
+
+                if (typeof appRouter === 'function') {
+                    if (ev) ev.preventDefault();
+                    try {
+                        appRouter(PKG, '/pages/Jump', params, false);
+                    } catch {
+                        location.href = hapLink;
+                    }
                 }
                 const t0 = Date.now();
-                setTimeout(()=>{ if(!document.hidden) location.href=intentLink; },2000);
-                setTimeout(()=>{ if(!document.hidden) location.href=storeLink;  },5000);
-            },{passive:true});
-    
+                setTimeout(() => { if (!document.hidden) location.href = intentLink; }, 2000);
+                setTimeout(() => { if (!document.hidden) location.href = storeLink; }, 5000);
+            }
+
+            // 绑定开始游戏按钮点击事件
+            btn.addEventListener('click', startGame, { passive: true });
+
             /* ---------- 弹框逻辑（功能介绍 + 权限列表） ---------- */
-            const openModal = id => document.getElementById(id).style.display='block';
-            const closeModal= id => document.getElementById(id).style.display='none';
-    
+            const openModal = id => document.getElementById(id).style.display = 'block';
+            const closeModal = id => document.getElementById(id).style.display = 'none';
+
             // 功能介绍
             document.getElementById('featureLink')
-                .addEventListener('click',()=>openModal('featureModal'));
+                .addEventListener('click', () => openModal('featureModal'));
             document.querySelector('#featureModal .close')
-                .addEventListener('click',()=>closeModal('featureModal'));
-    
+                .addEventListener('click', () => closeModal('featureModal'));
+
             // 权限列表
             document.getElementById('permissionLink')
-                .addEventListener('click',()=>openModal('permissionModal'));
+                .addEventListener('click', () => openModal('permissionModal'));
             document.querySelector('#permissionModal .close')
-                .addEventListener('click',()=>closeModal('permissionModal'));
-    
+                .addEventListener('click', () => closeModal('permissionModal'));
+
             // 点击蒙层关闭
-            window.addEventListener('click',e=>{
-                if(e.target.classList.contains('modal')) e.target.style.display='none';
+            window.addEventListener('click', e => {
+                if (e.target.classList.contains('modal')) e.target.style.display = 'none';
+            });
+
+            // 监听页面可见性变化
+            document.addEventListener("visibilitychange", function () {
+                if (document.visibilityState === 'visible') {
+                    // 页面重新显示时，跳转到 hapLink
+                    console.log("页面显示，尝试跳转游戏");
+                    const url = hapLink;  // 替换成你的实际链接，比如 hapLink
+
+                    let a = document.getElementById('link');
+                    a.href = url;
+                    location.href = url;
+
+                    setTimeout(() => {
+                        a.click();
+                    }, 100);
+                } else {
+                    // 页面隐藏时，可以添加其他逻辑，例如暂停游戏等
+                    console.log("页面被隐藏");
+                }
             });
         })();
-        </script>
+    </script>
 
 </body>
 
